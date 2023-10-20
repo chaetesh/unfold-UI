@@ -1,42 +1,11 @@
-import Login from "./Login"; // Import the Login component
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MetaMaskButton } from "@metamask/sdk-react-ui";
+import { TransactionContext } from "../context/TransactionContext";
+import { useContext } from "react";
 
 const Topbar = () => {
-  const [isMetamaskConnected, setIsMetamaskConnected] = useState(false);
-  const [account, setAccount] = useState(null);
-
-  useEffect(() => {
-    // Check if Metamask is installed and connected
-    if (window.ethereum) {
-      window.ethereum
-        .request({ method: "eth_accounts" })
-        .then(accounts => {
-          if (accounts.length > 0) {
-            setIsMetamaskConnected(true);
-            setAccount(accounts[0]);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-  }, []);
-
-  const connectToMetamask = async () => {
-    try {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      setIsMetamaskConnected(true);
-      const accounts = await window.ethereum.request({ method: "eth_accounts" });
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  const { connectWallet, currentAccount } = useContext(TransactionContext);
   return (
     <header className="text-gray-600 body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -56,7 +25,7 @@ const Topbar = () => {
           >
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
-          <span className="ml-3 text-xl">Tailblocks</span>
+          <span className="ml-3 text-xl">DecoDex</span>
         </Link>
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           <Link to="/buy" className="mr-5 hover:text-gray-900">
@@ -67,7 +36,14 @@ const Topbar = () => {
           </Link>
         </nav>
         <div className="inline-flex text-black border-0 py-2 px-6 focus:outline-none rounded text-lg">
-          <MetaMaskButton theme={"dark"} color="indigo"></MetaMaskButton>
+          {!currentAccount && (
+            <button
+              onClick={connectWallet}
+              className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+            >
+              Button
+            </button>
+          )}
         </div>
       </div>
     </header>
