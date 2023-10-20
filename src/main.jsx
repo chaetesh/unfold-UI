@@ -7,6 +7,7 @@ import Footer from "./components/Footer.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Buy from "./components/BuyMarket.jsx";
 import Sell from "./components/SellMarket.jsx";
+import { MetaMaskUIProvider } from "@metamask/sdk-react-ui";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MetaMaskUIProvider
+      sdkOptions={{
+        dappMetadata: {
+          name: "Demo UI React App",
+        },
+      }}
+    >
+      <RouterProvider router={router} />
+    </MetaMaskUIProvider>
   </React.StrictMode>
 );
