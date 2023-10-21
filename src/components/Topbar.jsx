@@ -1,11 +1,43 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MetaMaskButton } from "@metamask/sdk-react-ui";
-import { TransactionContext } from "../context/TransactionContext";
-import { useContext } from "react";
 
 const Topbar = () => {
-  const { connectWallet, currentAccount } = useContext(TransactionContext);
+  const [isMetamaskConnected, setIsMetamaskConnected] = useState(false);
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    // Check if Metamask is installed and connected
+    if (window.ethereum) {
+      window.ethereum
+        .request({ method: "eth_accounts" })
+        .then((accounts) => {
+          if (accounts.length > 0) {
+            setIsMetamaskConnected(true);
+            setAccount(accounts[0]);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
+
+  const connectToMetamask = async () => {
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      setIsMetamaskConnected(true);
+      const accounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+      if (accounts.length > 0) {
+        setAccount(accounts[0]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <header className="text-gray-600 body-font">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -36,14 +68,7 @@ const Topbar = () => {
           </Link>
         </nav>
         <div className="inline-flex text-black border-0 py-2 px-6 focus:outline-none rounded text-lg">
-          {!currentAccount && (
-            <button
-              onClick={connectWallet}
-              className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-            >
-              Button
-            </button>
-          )}
+          <MetaMaskButton theme={"dark"} color="indigo"></MetaMaskButton>
         </div>
       </div>
     </header>
