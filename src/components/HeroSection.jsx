@@ -31,8 +31,16 @@ const Hero = () => {
             />
           </div>
         </div>
-      </section>
-    );
-}
+        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+          <img
+            className="object-cover object-center rounded-2xl"
+            alt="hero"
+            src="https://firebasestorage.googleapis.com/v0/b/storagetester-6fff0.appspot.com/o/tachyon-2-dr.gif?alt=media&token=c47b3fb5-6d32-426c-9ff9-bf8426633f7e"
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default Hero;
