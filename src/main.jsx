@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import Topbar from "./components/Topbar.jsx";
-import Footer from "./components/Footer.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Buy from "./components/BuyMarket.jsx";
 import Sell from "./components/SellMarket.jsx";
@@ -18,9 +17,6 @@ const router = createBrowserRouter([
           <Topbar />
           <App />
         </div>
-        <div className=" text-white py-4 text-center sticky bottom-0">
-          <Footer />
-        </div>
       </>
     ),
   },
@@ -32,9 +28,6 @@ const router = createBrowserRouter([
           <Topbar />
           <Buy />
         </div>
-        <div className=" text-white py-4 text-center sticky bottom-0">
-          <Footer />
-        </div>
       </>
     ),
   },
@@ -45,9 +38,6 @@ const router = createBrowserRouter([
         <div className="min-h-screen">
           <Topbar />
           <Sell />
-        </div>
-        <div className=" text-white py-4 text-center sticky bottom-0">
-          <Footer />
         </div>
       </>
     ),
