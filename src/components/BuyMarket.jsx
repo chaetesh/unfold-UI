@@ -6,8 +6,7 @@ const Buy = () => {
   const [formData, setFormData] = useState({
     dataId: "",
   });
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
+  const [responseData, setResponseData] = useState(null);
 
   const updateEthers = () => {
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -33,6 +32,13 @@ const Buy = () => {
 
     const data = await contract.access(formData.dataId);
     console.log(data);
+    const resData = {
+      name: data[0],
+      category: data[1],
+      data: data[2],
+      owner: data["user"],
+    };
+    setResponseData(resData);
   };
 
   return (
@@ -61,6 +67,20 @@ const Buy = () => {
         >
           Access Data
         </button>
+        {responseData ? (
+          <>
+            <p style={{ fontSize: "1.3rem", marginTop: "15px" }}>Name:</p>
+            <p>{responseData.name}</p>
+            <p style={{ fontSize: "1.3rem", marginTop: "15px" }}>Category:</p>
+            <p>{responseData.category}</p>
+            <p style={{ fontSize: "1.3rem", marginTop: "15px" }}>Data:</p>
+            <p>{responseData.data}</p>
+            <p style={{ fontSize: "1.3rem", marginTop: "15px" }}>Owner:</p>
+            <p>{responseData.owner}</p>
+          </>
+        ) : (
+          ""
+        )}
       </form>
     </div>
   );
