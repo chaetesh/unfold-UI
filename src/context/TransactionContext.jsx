@@ -30,7 +30,7 @@ export const TransactionProvider = ({ children }) => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
+  };
 
   const checkIfWalletIsConnected = async () => {
     if (!ethereum) {
@@ -59,35 +59,61 @@ export const TransactionProvider = ({ children }) => {
     }
   };
 
+  function listenForTransactionMine(transactionResponse, provider) {
+    console.log(`Mining ${transactionResponse.hash}...`);
+    // This promise will wait for until the listner is completed and will call resolve if its completed succesfully else reject
+    return new Promise((resolve, reject) => {
+      // listen for this transaction to finish( This listner will call callback-function once there is one confirmation)
+      provider.once(transactionResponse.hash, (transactionReciept) => {
+        // Print the number of confirmations
+        console.log(
+          `Completed with ${transactionReciept.confirmations} Confirmations`
+        );
+        resolve();
+      });
+    });
+  }
+
   const sendTransaction = async () => {
-    try{
+    try {
       if (!ethereum) {
         return alert("Make sure you install metamask!");
       }
+      console.log("Sending transaction");
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const { dataId, category, name, data, cost } = formData;
-      const parsedAmount = ethers.utils.parseEther(cost);
-       
-      const transactionContract = getEthereumContract();  
-      await ethereum.request({method: "eth_sendTransaction" , params: [
-        {
-          from: currentAccount,
-          to: contractAddress,
-          gas: "0x5208",
-          amount: parsedAmount._hex,
-        },
-      ]});
-      console.log("Transaction Mined");
-    } catch {
-      console.log("Transaction Failed");
-    }
-  }
 
+      const transactionContract = getEthereumContract();
+      const transactionResponse = await transactionContract.addData(
+        dataId,
+        name,
+        category,
+        data,
+        cost,
+      );
+
+      await listenForTransactionMine(transactionResponse, provider);
+      console.log("Transaction Mined");
+    } catch(error) {
+      console.log("Transaction Failed");
+      console.log(error)
+    }
+  };
 
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
   return (
-    <TransactionContext.Provider value={{ connectWallet, currentAccount , formData, setFormData,handleChange, sendTransaction }}>
+    <TransactionContext.Provider
+      value={{
+        connectWallet,
+        currentAccount,
+        formData,
+        setFormData,
+        handleChange,
+        sendTransaction,
+      }}
+    >
       {children}
     </TransactionContext.Provider>
   );

@@ -27,12 +27,6 @@ const Topbar = () => {
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       setIsMetamaskConnected(true);
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
-      }
     } catch (error) {
       console.error(error);
     }
